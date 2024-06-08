@@ -8,5 +8,5 @@ function Coin(){
 }
 // commit test
 // token test
-
+// token test go
 export default Coin;
