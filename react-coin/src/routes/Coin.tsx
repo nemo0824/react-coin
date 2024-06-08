@@ -7,4 +7,6 @@ function Coin(){
     return <h1>coin :{coinId}</h1>
 }
 // commit test
+// token test
+
 export default Coin;
