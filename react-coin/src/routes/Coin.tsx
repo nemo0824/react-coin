@@ -8,4 +8,5 @@ function Coin(){
 }
 // commit test
 // token test
+// token test 2
 export default Coin;
