@@ -6,5 +6,5 @@ function Coin(){
     console.log(coinId)
     return <h1>coin :{coinId}</h1>
 }
-
-export default Coin
+// commit test
+export default Coin;
