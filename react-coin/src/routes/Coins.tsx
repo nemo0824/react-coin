@@ -26,9 +26,11 @@ const Coin = styled.li`
  margin-bottom: 10px;
  padding: 20px;
  border-radius: 15px;
- a{
+ a {
  transition: color 0.2s ease-in;
- display:block;
+ display:flex;
+ align-items: center;
+ 
 }
  &:hover{
     a{
@@ -40,6 +42,11 @@ const Coin = styled.li`
 const Loader = styled.span`
 text-align : center;
 display: block;
+`
+const Img = styled.img`
+width: 25px;
+height: 25px;
+margin-right: 10px
 `
 
 
@@ -89,7 +96,9 @@ function Coins(){
         </Header>
         {loading ? (<Loader>loading....</Loader>) :(<CoinList>
             {coins.map(coin => <Coin key={coin.id}>
-                <Link to={`/${coin.id}`}>{coin.name} &rarr;</Link>
+                <Link to={`/${coin.id}`} state={coin}>
+                    <Img src={`https://cryptocurrencyliveprices.com/img/${coin.id}.png`}/>
+                    {coin.name} &rarr;</Link>
             </Coin>)}
         </CoinList>)}
     </Container>
