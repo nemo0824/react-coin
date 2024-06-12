@@ -73,7 +73,7 @@ function Coins(){
 
 
     useEffect(()=>{
-     
+        getCoins()
     },[])
 
     // 코인을 가져오는 함수

@@ -10,6 +10,7 @@ function Router(){
     <Routes>
         <Route path="/" element={<Coins></Coins>}/>
         <Route path="/:coinId" element={<Coin></Coin>}/>
+        <Route path="/:coinId/*" element={<Coin/>} />
     </Routes>
     </BrowserRouter>
     )
