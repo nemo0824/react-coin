@@ -1,6 +1,6 @@
 import { info } from "console";
 import { useEffect, useState } from "react";
-import { useLocation, useParams, useSearchParams, Route, Routes} from "react-router-dom"
+import { useLocation, useParams, useSearchParams, Route, Routes, Link, useMatch} from "react-router-dom"
 import { styled } from "styled-components";
 import Chart from "./Chart";
 import Price from "./Price";
@@ -50,6 +50,28 @@ const OverviewItem = styled.div`
 const Description = styled.p`
   margin: 20px 0px;
 `;
+
+const Tabs = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 25px 0px;
+  gap: 10px;
+`;
+
+const Tab = styled.span<{isActive: boolean}>`
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: rgba(0,0,0,0.5);
+  padding: 7px 0px;
+  border-radius: 10px;
+  color: ${props => props.isActive ? props.theme.accentColor : props.theme.textColor}
+  a{
+    display: block;
+  }
+`;
+ 
 
 
 interface RouteState{
@@ -121,6 +143,13 @@ function Coin(){
     const location = useLocation()
     const [infoData, setInfoData] = useState<IInfoData>();
     const [priceData, setPriceData] = useState<IPriceData>();
+    const priceMatch = useMatch("/:coinId/price");
+    const chartMatch = useMatch("/:coinId/chart");
+    // console.log(priceMatch)
+    // console.log(chartMatch)
+    // useMatch 
+    // url이 일치하면 object를 던저줌 
+ 
 
    useEffect(()=>{
     (async()=>{
@@ -173,6 +202,18 @@ function Coin(){
               <span>{priceData?.max_supply}</span>
             </OverviewItem>
           </Overview>
+
+          <Tabs>
+            <Tab isActive={chartMatch !== null}>
+             <Link to={`/${coinId}/chart`}>chart</Link>
+            </Tab>
+            <Tab isActive={priceMatch !== null}>
+             <Link to={`/${coinId}/price`}>price</Link>
+            </Tab>
+          </Tabs>
+
+         
+         
           <Routes>
             {/* <Route path="chart" element={<Chart/>}/> */}
             <Route path="Chart" element={<Chart />} />

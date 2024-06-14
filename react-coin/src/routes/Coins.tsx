@@ -1,6 +1,8 @@
 import styled from "styled-components"
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
+import { fetchCoins } from "../api";
 
 const Title = styled.h1`
 color:${(props) => props.theme.accentColor}
@@ -52,7 +54,7 @@ margin-right: 10px
 
 
 
-interface CoinObject{
+interface ICoin{
     id:string;
     name:string;
     symbol:string;
@@ -64,29 +66,34 @@ interface CoinObject{
 
 
 function Coins(){
-    const [coins, setCoins] = useState<CoinObject[]>([])
-    const [loading, setLoading] = useState(true);
-    useEffect(()=>{
+    const {isLoading, data} = useQuery<ICoin[]>("allCoins", fetchCoins)
+
+    //useQuery 함수가 fetchCoins 함수를 부르고 다들어가기전에는 isLoading 띄어주고 , 다됐을때 data 넣어줌
+    // 특정 코인 상세페이지 들어갔다가 다시 왔을때 loading 보이지않는이유 --> react query에서 데이터를 캐시에 저장해주기때문
+
+
+    // const [coins, setCoins] = useState<ICoin[]>([])
+    // const [loading, setLoading] = useState(true);
+    // useEffect(()=>{
       
-        getCoins()
-    },[])
+    //     getCoins()
+    // },[])
 
 
-    useEffect(()=>{
-        getCoins()
-    },[])
+    // useEffect(()=>{
+    //     getCoins()
+    // },[])
 
     // 코인을 가져오는 함수
     // promise async await을 이용해서 비동기처리를 해줌 -> response로 값을 받아온뒤 -> json으로 변환 
 
-    const getCoins = async()=>{
-        const response = await fetch("https://api.coinpaprika.com/v1/coins")
-        const json = await response.json()
+    // const getCoins = async()=>{
+       
         
-        setCoins(json.slice(0,100))
-        console.log(coins)
-        setLoading(false)
-    }
+    //     setCoins(json.slice(0,100))
+    //     console.log(coins)
+    //     setLoading(false)
+    // }
 
     // 삼항연산자를 사용할때 () 소괄호 넣는것은 필수는 아님 하지만 가독성을 높이기위해서 넣는것임
     return (
@@ -94,8 +101,8 @@ function Coins(){
         <Header>
             <Title>코인</Title>
         </Header>
-        {loading ? (<Loader>loading....</Loader>) :(<CoinList>
-            {coins.map(coin => <Coin key={coin.id}>
+        {isLoading ? (<Loader>loading....</Loader>) :(<CoinList>
+            {data?.slice(0,100).map(coin => <Coin key={coin.id}>
                 <Link to={`/${coin.id}`} state={coin}>
                     <Img src={`https://cryptocurrencyliveprices.com/img/${coin.id}.png`}/>
                     {coin.name} &rarr;</Link>
