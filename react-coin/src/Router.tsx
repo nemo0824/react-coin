@@ -4,6 +4,7 @@ import Coin from "./routes/Coin";
 import Coins from "./routes/Coins";
 
 
+
 function Router(){
     return (
     <BrowserRouter>
@@ -11,6 +12,7 @@ function Router(){
         <Route path="/" element={<Coins></Coins>}/>
         <Route path="/:coinId" element={<Coin></Coin>}/>
         <Route path="/:coinId/*" element={<Coin/>} />
+    
     </Routes>
     </BrowserRouter>
     )

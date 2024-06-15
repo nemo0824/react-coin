@@ -1,6 +1,6 @@
 import { info } from "console";
 import { useEffect, useState } from "react";
-import { useLocation, useParams, useSearchParams, Route, Routes} from "react-router-dom"
+import { useLocation, useParams, useSearchParams, Route, Routes, Link} from "react-router-dom"
 import { styled } from "styled-components";
 import Chart from "./Chart";
 import Price from "./Price";
@@ -51,6 +51,25 @@ const Description = styled.p`
   margin: 20px 0px;
 `;
 
+const Tabs = styled.div`
+  display: grid;
+  gird-template-columns : repeat(2, 1fr);
+  margin: 25px 0px; 
+  gap : 10px;
+`;
+
+const Tab = styled.span`
+  text-align: center; 
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: rgba(0,0,0,0.5);
+  padding: 7px 0px
+  border-radius: 10px;
+  a{
+    display block;
+  }
+`
 
 interface RouteState{
    state:{
@@ -118,7 +137,6 @@ function Coin(){
     const {coinId} = useParams<{coinId:string}>();
     const [loading, setLoading] = useState(true);
     const { state } = useLocation() as RouteState;
-    const location = useLocation()
     const [infoData, setInfoData] = useState<IInfoData>();
     const [priceData, setPriceData] = useState<IPriceData>();
 
@@ -173,9 +191,16 @@ function Coin(){
               <span>{priceData?.max_supply}</span>
             </OverviewItem>
           </Overview>
+          <Tabs>
+            <Tab>
+            <Link to={`/${coinId}/chart`}>Chart</Link>
+            </Tab>
+            <Tab>
+                <Link to={`/${coinId}/price`}>Price</Link>
+            </Tab>
+          </Tabs>
           <Routes>
-            {/* <Route path="chart" element={<Chart/>}/> */}
-            <Route path="Chart" element={<Chart />} />
+            <Route path="chart" element={<Chart />} />
             <Route path="price" element={<Price />} />
         </ Routes>
         </>
