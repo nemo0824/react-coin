@@ -4,6 +4,8 @@ import { useLocation, useParams, useSearchParams, Route, Routes, Link, useMatch}
 import { styled } from "styled-components";
 import Chart from "./Chart";
 import Price from "./Price";
+import { useQueries, useQuery } from "react-query";
+import { fetchCoinInfo, fetchCoinTickers } from "../api";
 
 const Title = styled.h1`
 color:${(props) => props.theme.accentColor}
@@ -138,27 +140,32 @@ interface IPriceData{
 
 function Coin(){
     const {coinId} = useParams<{coinId:string}>();
-    const [loading, setLoading] = useState(true);
+   
     const { state } = useLocation() as RouteState;
-    const [infoData, setInfoData] = useState<IInfoData>();
-    const [priceData, setPriceData] = useState<IPriceData>();
+    // const [infoData, setInfoData] = useState<IInfoData>();
+    // const [priceData, setPriceData] = useState<IPriceData>();
     const priceMatch = useMatch("/:coinId/price");
     const chartMatch = useMatch("/:coinId/chart");
+    
+    const {isLoading: infoLoading, data: infoData} = useQuery<IInfoData>(["info", coinId], () => fetchCoinInfo(`${coinId}`))
+    const {isLoading: tickersLoading, data: tickersData} = useQuery<IPriceData>(["tickers", coinId], () => fetchCoinTickers(`${coinId}`))
+    
+    const loading = infoLoading || tickersLoading;
     // console.log(priceMatch)
     // console.log(chartMatch)
     // useMatch 
     // url이 일치하면 object를 던저줌 
  
 
-   useEffect(()=>{
-    (async()=>{
-        const infoData = await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
-        const priceData = await (await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)).json();
-        setInfoData(infoData);
-        setPriceData(priceData);
-        setLoading(false);
-    })();
-   },[coinId])
+  //  useEffect(()=>{
+  //   (async()=>{
+  //       const infoData = await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
+  //       const priceData = await (await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)).json();
+  //       setInfoData(infoData);
+  //       setPriceData(priceData);
+  //       setLoading(false);
+  //   })();
+  //  },[coinId])
 
     // console.log(location) 
     //location 이라는 객체안에 state라는 객체  == 객체안에 객체 
@@ -193,12 +200,12 @@ function Coin(){
           <Description>{infoData?.description}</Description>
           <Overview>
             <OverviewItem>
-              <span>Total Suply:</span>
-              <span>{priceData?.total_supply}</span>
+              <span>Total Supply:</span>
+              <span>{tickersData?.total_supply}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Max Supply:</span>
-              <span>{priceData?.max_supply}</span>
+              <span>{tickersData?.max_supply}</span>
             </OverviewItem>
           </Overview>
 
@@ -214,7 +221,7 @@ function Coin(){
          
          
           <Routes>
-            <Route path="chart" element={<Chart />} />
+            <Route path="chart" element={<Chart coinId={coinId as string}/>} />
             <Route path="price" element={<Price />} />
         </ Routes>
         </>
