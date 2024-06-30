@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { fetchCoins } from "../api";
+import { useSetRecoilState } from "recoil";
+import { isDarkAtom } from "../atoms";
 
 const Title = styled.h1`
 color:${(props) => props.theme.accentColor}
@@ -24,7 +26,7 @@ const CoinList = styled.ul`
 `;
 const Coin = styled.li`
  background-color: white;
- color: ${(props) => props.theme.bgColor};
+ color: ${(props) => props.theme.textColor};
  margin-bottom: 10px;
  padding: 20px;
  border-radius: 15px;
@@ -66,7 +68,9 @@ interface ICoin{
 
 
 function Coins(){
-    const {isLoading, data} = useQuery<ICoin[]>("allCoins", fetchCoins)
+    const setDarkAtom = useSetRecoilState(isDarkAtom);
+    const toggleDarkAtom = () => setDarkAtom((prev)=> !prev);
+    const {isLoading, data} = useQuery<ICoin[]>("allCoins", fetchCoins);
 
     //useQuery 함수가 fetchCoins 함수를 부르고 다들어가기전에는 isLoading 띄어주고 , 다됐을때 data 넣어줌
     // 특정 코인 상세페이지 들어갔다가 다시 왔을때 loading 보이지않는이유 --> react query에서 데이터를 캐시에 저장해주기때문
@@ -100,6 +104,7 @@ function Coins(){
     <Container>
         <Header>
             <Title>코인</Title>
+            <button onClick={toggleDarkAtom}>toggle button</button>
         </Header>
         {isLoading ? (<Loader>loading....</Loader>) :(<CoinList>
             {data?.slice(0,100).map(coin => <Coin key={coin.id}>
